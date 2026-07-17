@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-electron/
+release/
+
+# Env files
+.env
+.env.local
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# SQLite local db (don't commit your actual session data)
+*.sqlite
+*.sqlite3
+*.db
+
+# Electron-builder output
+*.exe
+*.dmg
+*.AppImage
