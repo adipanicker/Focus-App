@@ -1,5 +1,6 @@
 import { BrowserWindow } from "electron";
 import { IPC, TimerState, TimerStatus } from "../../shared/types";
+import { sessionService } from "./SessionService";
 
 const DEFAULT_DURATION = 25 * 60;
 
@@ -9,6 +10,10 @@ class TimerService {
   private remainingSeconds = DEFAULT_DURATION;
   private intervalId: NodeJS.Timeout | null = null;
   private windowGetters: (() => BrowserWindow | null)[] = [];
+
+  private activityId: number | null = null;
+  private sessionType: "focus" | "break" = "focus";
+  private startedAt: number | null = null;
 
   registerWindow(getWindow: () => BrowserWindow | null) {
     this.windowGetters.push(getWindow);
@@ -22,10 +27,17 @@ class TimerService {
     };
   }
 
-  start(durationSeconds: number = DEFAULT_DURATION) {
+  start(
+    durationSeconds: number = DEFAULT_DURATION,
+    activityId: number | null = null,
+    type: "focus" | "break" = "focus",
+  ) {
     this.durationSeconds = durationSeconds;
-    this.remainingSeconds = this.remainingSeconds;
+    this.remainingSeconds = durationSeconds;
     this.status = "running";
+    this.activityId = activityId;
+    this.sessionType = type;
+    this.startedAt = Date.now();
     this.runInterval();
     this.broadcast();
   }
@@ -45,6 +57,10 @@ class TimerService {
   }
 
   stop() {
+    if (this.status === "idle") return;
+
+    this.logCurrentSession(false);
+
     this.status = "idle";
     this.remainingSeconds = this.durationSeconds;
     this.clearTimer();
@@ -59,9 +75,32 @@ class TimerService {
         this.remainingSeconds = 0;
         this.status = "completed";
         this.clearTimer();
+        this.logCurrentSession(true);
       }
       this.broadcast();
     }, 1000);
+  }
+
+  private logCurrentSession(completed: boolean) {
+    if (this.startedAt === null) return; // already logged (e.g. PiP stop after natural completion)
+
+    const elapsedSeconds = this.durationSeconds - this.remainingSeconds;
+    if (elapsedSeconds <= 0) {
+      this.startedAt = null;
+      return; // stopped instantly, nothing worth recording
+    }
+
+    sessionService.logSession({
+      activityId: this.activityId,
+      type: this.sessionType,
+      plannedDurationSeconds: this.durationSeconds,
+      durationSeconds: elapsedSeconds,
+      startedAt: this.startedAt,
+      endedAt: Date.now(),
+      completed,
+    });
+
+    this.startedAt = null;
   }
 
   private clearTimer() {

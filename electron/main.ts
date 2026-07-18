@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from "electron";
+import "./services/db";
 import { createMainWindow, getMainWindow } from "./windows/mainWindow";
 import { createPipWindow, getPipWindow } from "./windows/pipWindow";
 import { createTray } from "./tray";
