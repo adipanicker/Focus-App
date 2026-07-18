@@ -26,6 +26,7 @@ export interface TimerState {
   status: TimerStatus;
   remainingSeconds: number;
   durationSeconds: number;
+  type: "focus" | "break";
 }
 
 export interface Activity {
@@ -85,6 +86,7 @@ export interface StatsSummary {
   streakDays: number;
   todaySeconds: number;
   totalSeconds: number;
+  activeDays: number;
   heatmap: DayTotal[];
   byActivity: ActivityBreakdown[];
   todaySessions: TodaySession[];

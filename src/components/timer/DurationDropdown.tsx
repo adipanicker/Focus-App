@@ -42,7 +42,7 @@ export default function DurationDropdown({
       <select
         value={isPreset ? valueMinutes : "custom"}
         onChange={handleSelect}
-        className="flex-1 bg-neutral-800 text-white text-sm rounded-lg px-3 py-2 border border-neutral-700 focus:outline-none focus:border-neutral-500"
+        className="bg-neutral-800 text-white text-sm rounded-lg px-3 py-2 border border-neutral-700 focus:outline-none focus:border-neutral-500"
       >
         {presets.map((p) => (
           <option key={p.id} value={p.minutes}>

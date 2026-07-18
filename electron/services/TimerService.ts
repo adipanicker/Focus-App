@@ -1,6 +1,7 @@
-import { BrowserWindow } from "electron";
+import { BrowserWindow, Notification } from "electron";
 import { IPC, TimerState, TimerStatus } from "../../shared/types";
 import { sessionService } from "./SessionService";
+import { db } from "./db";
 
 const DEFAULT_DURATION = 25 * 60;
 
@@ -24,6 +25,7 @@ class TimerService {
       status: this.status,
       remainingSeconds: this.remainingSeconds,
       durationSeconds: this.durationSeconds,
+      type: this.sessionType,
     };
   }
 
@@ -76,6 +78,7 @@ class TimerService {
         this.status = "completed";
         this.clearTimer();
         this.logCurrentSession(true);
+        this.maybeNotifyCompletion();
       }
       this.broadcast();
     }, 1000);
@@ -118,6 +121,24 @@ class TimerService {
         win.webContents.send(IPC.TIMER_TICK, state);
       }
     }
+  }
+
+  private maybeNotifyCompletion() {
+    const settings = db
+      .prepare("SELECT notifications_enabled FROM settings WHERE id = 1")
+      .get() as { notifications_enabled: number } | undefined;
+    if (!settings?.notifications_enabled) return;
+
+    new Notification({
+      title:
+        this.sessionType === "focus"
+          ? "Focus session complete"
+          : "Break complete",
+      body:
+        this.sessionType === "focus"
+          ? "Nice work — take a break?"
+          : "Break's over, ready to focus?",
+    }).show();
   }
 }
 

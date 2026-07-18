@@ -27,7 +27,10 @@ export default function TimerCircle({
   const strokeColor = mixColors(accentColor, MUTED_COLOR, elapsedFraction);
 
   return (
-    <svg width={240} height={240} viewBox="0 0 220 220">
+    <svg
+      viewBox="0 0 220 220"
+      style={{ width: "min(55vw, 45vh)", height: "min(55vw, 50vh)" }}
+    >
       <circle
         cx={110}
         cy={110}

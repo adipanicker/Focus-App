@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, Menu } from "electron";
 import "./services/db";
 import { createMainWindow, getMainWindow } from "./windows/mainWindow";
 import { createPipWindow, getPipWindow } from "./windows/pipWindow";
@@ -7,6 +7,7 @@ import { registerIpcHandlers } from "./ipc/handlers";
 import { timerService } from "./services/TimerService";
 
 app.whenReady().then(() => {
+  Menu.setApplicationMenu(null);
   createMainWindow();
   createPipWindow();
   createTray();

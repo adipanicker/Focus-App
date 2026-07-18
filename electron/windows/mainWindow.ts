@@ -1,6 +1,7 @@
-import { app, BrowserWindow } from "electron";
+import { BrowserWindow, app } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { IPC } from "../../shared/types";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -10,6 +11,12 @@ export function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
     height: 650,
+    titleBarStyle: "hidden",
+    titleBarOverlay: {
+      color: "#0a0a0a", // matches bg-neutral-950
+      symbolColor: "#a3a3a3", // neutral-400, icon color
+      height: 40, // matches our h-10 bar
+    },
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -24,7 +31,6 @@ export function createMainWindow() {
     mainWindow.loadFile(path.join(__dirname, "../../dist/index.html"));
   }
 
-  //hide instead of destroy - PiP keeps running, tray "Quit" is the real exit
   mainWindow.on("close", (event) => {
     if ((app as any).isQuitting) return;
     event.preventDefault();

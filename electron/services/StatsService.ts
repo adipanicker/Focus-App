@@ -86,6 +86,7 @@ class StatsService {
       streakDays,
       todaySeconds,
       totalSeconds,
+      activeDays: dailyTotals.size,
       heatmap,
       byActivity,
       todaySessions,

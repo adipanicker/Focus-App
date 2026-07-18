@@ -3,6 +3,7 @@ import { Flame, Clock4, Sigma } from "lucide-react";
 import { useSettings } from "@shared/hooks/useSettings";
 import { formatDurationLong, formatClockTime } from "@shared/lib/format";
 import Heatmap from "@/components/stats/Heatmap";
+import Card from "@/components/shared/Card";
 import type { StatsSummary } from "@shared/types";
 
 export default function StatsPage() {
@@ -23,7 +24,7 @@ export default function StatsPage() {
   );
 
   return (
-    <div className="flex flex-col gap-6 max-w-lg">
+    <div className="flex flex-col gap-6 max-w-2xl mx-auto w-full">
       <div className="flex gap-3">
         <StatCard
           icon={<Flame size={13} />}
@@ -43,14 +44,22 @@ export default function StatsPage() {
         />
       </div>
 
-      <div>
-        <p className="text-xs text-neutral-400 uppercase tracking-wide mb-2.5">
-          Activity heatmap
-        </p>
+      <Card className="p-4">
+        <div className="flex justify-between items-start mb-2.5">
+          <p className="text-xs text-neutral-400 uppercase tracking-wide">
+            Activity heatmap
+          </p>
+          <div className="text-right">
+            <p className="text-[11px] text-neutral-400">Active days</p>
+            <p className="text-sm font-medium text-neutral-50">
+              {stats.activeDays}
+            </p>
+          </div>
+        </div>
         <Heatmap days={stats.heatmap} accentColor={settings.accent_color} />
-      </div>
+      </Card>
 
-      <div>
+      <Card className="p-4">
         <p className="text-xs text-neutral-400 uppercase tracking-wide mb-2.5">
           Time by activity
         </p>
@@ -63,7 +72,7 @@ export default function StatsPage() {
           {stats.byActivity.map((a) => (
             <div key={a.activityId}>
               <div className="flex justify-between text-sm mb-1">
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-2 text-neutral-100">
                   <span
                     className="w-2 h-2 rounded-full"
                     style={{ background: a.color }}
@@ -74,7 +83,7 @@ export default function StatsPage() {
                   {formatDurationLong(a.totalSeconds)}
                 </span>
               </div>
-              <div className="h-1.5 rounded-full bg-neutral-800">
+              <div className="h-1.5 rounded-full bg-neutral-700/60">
                 <div
                   className="h-full rounded-full"
                   style={{
@@ -86,9 +95,9 @@ export default function StatsPage() {
             </div>
           ))}
         </div>
-      </div>
+      </Card>
 
-      <div>
+      <Card className="p-4">
         <p className="text-xs text-neutral-400 uppercase tracking-wide mb-2.5">
           Today's sessions
         </p>
@@ -98,7 +107,7 @@ export default function StatsPage() {
           )}
           {stats.todaySessions.map((s) => (
             <div key={s.id} className="flex justify-between text-sm">
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-2 text-neutral-100">
                 <span
                   className="w-2 h-2 rounded-full"
                   style={{
@@ -117,7 +126,7 @@ export default function StatsPage() {
             </div>
           ))}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
@@ -134,16 +143,16 @@ function StatCard({
   unit?: string;
 }) {
   return (
-    <div className="flex-1 bg-neutral-800 rounded-xl p-3">
+    <Card className="flex-1 p-3">
       <p className="text-[11px] text-neutral-400 flex items-center gap-1 mb-1">
         {icon} {label}
       </p>
-      <p className="text-xl font-medium">
+      <p className="text-xl font-medium text-neutral-50">
         {value}{" "}
         {unit && (
           <span className="text-xs font-normal text-neutral-400">{unit}</span>
         )}
       </p>
-    </div>
+    </Card>
   );
 }

@@ -5,6 +5,7 @@ const initialState: TimerState = {
   status: "idle",
   remainingSeconds: 25 * 60,
   durationSeconds: 25 * 60,
+  type: "focus",
 };
 
 export function useTimerState() {

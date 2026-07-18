@@ -47,6 +47,14 @@ declare global {
       getSettings: () => Promise<AppSettings>;
       updateSettings: (payload: Partial<AppSettings>) => Promise<AppSettings>;
       getStatsSummary: () => Promise<StatsSummary>;
+
+      minimizeWindow: () => void;
+      toggleMaximizeWindow: () => void;
+      closeWindow: () => void;
+      isWindowMaximized: () => Promise<boolean>;
+      onWindowMaximizeChange: (
+        callback: (isMaximized: boolean) => void,
+      ) => () => void;
     };
   }
 }

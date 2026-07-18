@@ -25,7 +25,7 @@ export default function ActivityDropdown({
     <select
       value={value ?? ""}
       onChange={(e) => onChange(Number(e.target.value))}
-      className="flex-1 bg-neutral-800 text-white text-sm rounded-lg px-3 py-2 border border-neutral-700 focus:outline-none focus:border-neutral-500"
+      className="bg-neutral-800 text-white text-sm rounded-lg px-3 py-2 border border-neutral-700 focus:outline-none focus:border-neutral-500"
     >
       {activities.map((a) => (
         <option key={a.id} value={a.id}>

@@ -7,7 +7,7 @@ import { statsService } from "../services/StatsService";
 import { db } from "../services/db";
 
 export function registerIpcHandlers() {
-  console.log("=== WHAT IS IPC? ===", IPC);
+  // console.log("=== WHAT IS IPC? ===", IPC);
 
   ipcMain.on(IPC.SHOW_PIP, () => {
     getMainWindow()?.hide();
