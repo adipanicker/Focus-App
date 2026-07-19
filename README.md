@@ -3,13 +3,13 @@
 **A minimal, native-feeling focus timer for Windows — built to help you start working and stay focused without getting in your way.**
 
 <p align="center">
-  <img src="assets/screenshots/home.png" width="48%" alt="Focus Home" />
-  <img src="assets/screenshots/timer.png" width="48%" alt="Focus Timer" />
+  <img src="assets/screenshots/Home.png" width="48%" alt="Focus Home" />
+  <img src="assets/screenshots/Pip.png" width="48%" alt="Focus Timer" />
 </p>
 
 <p align="center">
-  <img src="assets/screenshots/stats.png" width="48%" alt="Focus Stats" />
-  <img src="assets/screenshots/settings.png" width="48%" alt="Focus Settings" />
+  <img src="assets/screenshots/Stats.png" width="48%" alt="Focus Stats" />
+  <img src="assets/screenshots/Settings.png" width="48%" alt="Focus Settings" />
 </p>
 
 ---
