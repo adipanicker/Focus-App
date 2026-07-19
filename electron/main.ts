@@ -6,26 +6,54 @@ import { createTray } from "./tray";
 import { registerIpcHandlers } from "./ipc/handlers";
 import { timerService } from "./services/TimerService";
 
-app.whenReady().then(() => {
-  Menu.setApplicationMenu(null);
-  createMainWindow();
-  createPipWindow();
-  createTray();
-  registerIpcHandlers();
+// Allow only one instance of Focus
+const gotTheLock = app.requestSingleInstanceLock();
 
-  timerService.registerWindow(getMainWindow);
-  timerService.registerWindow(getPipWindow);
-});
+if (!gotTheLock) {
+  // Another instance is already running
+  app.quit();
+} else {
+  // User tried to launch Focus again
+  app.on("second-instance", () => {
+    const mainWindow = getMainWindow();
+
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) {
+        mainWindow.restore();
+      }
+
+      mainWindow.show();
+      mainWindow.focus();
+    }
+  });
+
+  app.whenReady().then(() => {
+    Menu.setApplicationMenu(null);
+
+    createMainWindow();
+    createPipWindow();
+    createTray();
+    registerIpcHandlers();
+
+    timerService.registerWindow(getMainWindow);
+    timerService.registerWindow(getPipWindow);
+  });
+}
 
 app.on("before-quit", () => {
   (app as any).isQuitting = true;
 });
 
 app.on("window-all-closed", () => {
-  //main window "closing just hides it"
+  // Keep Focus running in the system tray
   if (process.platform === "darwin") return;
 });
 
 app.on("activate", () => {
-  getMainWindow()?.show();
+  const mainWindow = getMainWindow();
+
+  if (mainWindow) {
+    mainWindow.show();
+    mainWindow.focus();
+  }
 });

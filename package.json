@@ -1,5 +1,8 @@
 {
   "name": "focus",
+  "productName": "Focus",
+  "description": "A focus timer with a mini overlay for staying on task.",
+  "author": "Aditya Panicker",
   "version": "1.0.0",
   "main": "dist-electron/main.js",
   "type": "module",
@@ -9,9 +12,7 @@
     "preview": "vite preview"
   },
   "keywords": [],
-  "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "better-sqlite3": "^12.11.1",
     "framer-motion": "^12.42.2",

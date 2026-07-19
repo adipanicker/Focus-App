@@ -1,0 +1,19 @@
+appId: com.adityapanicker.focus
+productName: Focus
+directories:
+  output: release
+  buildResources: build
+files:
+  - dist/**/*
+  - dist-electron/**/*
+  - assets/**/*
+  - package.json
+win:
+  target: nsis
+  icon: build/icon.ico
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  uninstallDisplayName: Focus

@@ -17,6 +17,7 @@ export function createMainWindow() {
       symbolColor: "#a3a3a3", // neutral-400, icon color
       height: 40, // matches our h-10 bar
     },
+    icon: path.join(__dirname, "../../build/icon.ico"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -28,7 +29,7 @@ export function createMainWindow() {
     mainWindow.loadURL(`${devUrl}index.html`);
     mainWindow.webContents.openDevTools({ mode: "detach" });
   } else {
-    mainWindow.loadFile(path.join(__dirname, "../../dist/index.html"));
+    mainWindow.loadFile(path.join(__dirname, "../dist/index.html"));
   }
 
   mainWindow.on("close", (event) => {

@@ -30,7 +30,7 @@ export function createPipWindow() {
   if (devUrl) {
     pipWindow.loadURL(`${devUrl}pip.html`);
   } else {
-    pipWindow.loadFile(path.join(__dirname, "../../dist/pip.html"));
+    pipWindow.loadFile(path.join(__dirname, "../dist/pip.html"));
   }
 
   const { width: screenWidth, height: screenHeight } =
