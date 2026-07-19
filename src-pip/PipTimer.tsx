@@ -1,4 +1,5 @@
 import { useTimerState } from "@shared/hooks/useTimerState";
+import { Pause, Play, Square, Maximize2 } from "lucide-react";
 
 function formatTime(totalSeconds: number) {
   const m = Math.floor(totalSeconds / 60);
@@ -11,41 +12,25 @@ export default function PipTimer() {
 
   return (
     <div
+      className="w-full h-full rounded-2xl flex flex-col justify-between p-3 backdrop-blur-xl"
       style={
         {
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          padding: "10px",
-          color: "black",
+          background: "rgba(23, 23, 23, 0.72)",
+          border: "1px solid rgba(255,255,255,0.08)",
           WebkitAppRegion: "drag",
         } as React.CSSProperties
       }
     >
-      <p
-        style={
-          {
-            margin: 0,
-            fontSize: "20px",
-            fontFamily: "monospace",
-            WebkitAppRegion: "drag",
-          } as React.CSSProperties
-        }
-      >
-        {formatTime(remainingSeconds)}{" "}
-        <span style={{ fontSize: "11px", opacity: 0.6 }}>{status}</span>
-      </p>
+      <div style={{ WebkitAppRegion: "drag" } as React.CSSProperties}>
+        <p className="text-3xl font-mono font-medium text-white leading-none">
+          {formatTime(remainingSeconds)}
+        </p>
+        <p className="text-[11px] text-neutral-400 mt-1 capitalize">{status}</p>
+      </div>
 
       <div
-        style={
-          {
-            display: "flex",
-            gap: "6px",
-            WebkitAppRegion: "no-drag",
-          } as React.CSSProperties
-        }
+        className="flex gap-2"
+        style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
       >
         <button
           onClick={() =>
@@ -53,11 +38,22 @@ export default function PipTimer() {
               ? window.electronAPI.pauseTimer()
               : window.electronAPI.resumeTimer()
           }
+          className="w-6 h-6 rounded-lg flex items-center justify-center text-white bg-blue-600 hover:bg-blue-500 transition-colors"
         >
-          {status === "running" ? "⏸" : "▶"}
+          {status === "running" ? <Pause size={14} /> : <Play size={14} />}
         </button>
-        <button onClick={() => window.electronAPI.stopTimer()}>⏹</button>
-        <button onClick={() => window.electronAPI.showMain()}>↗️</button>
+        <button
+          onClick={() => window.electronAPI.stopTimer()}
+          className="w-6 h-6 rounded-lg flex items-center justify-center text-white bg-blue-600 hover:bg-blue-500 transition-colors"
+        >
+          <Square size={14} />
+        </button>
+        <button
+          onClick={() => window.electronAPI.showMain()}
+          className="w-6 h-6 rounded-lg flex items-center justify-center text-white bg-blue-600 hover:bg-blue-500 transition-colors"
+        >
+          <Maximize2 size={14} />
+        </button>
       </div>
     </div>
   );

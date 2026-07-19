@@ -15,9 +15,6 @@ export default function ActivityDropdown({
   useEffect(() => {
     window.electronAPI.getActivities().then((list) => {
       setActivities(list);
-      if (value === null && list.length > 0) {
-        onChange(list[0].id); // default to first activity once loaded
-      }
     });
   }, []);
 

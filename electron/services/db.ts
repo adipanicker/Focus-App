@@ -33,12 +33,14 @@ db.exec(`
   );
 
   CREATE TABLE IF NOT EXISTS settings (
-    id INTEGER PRIMARY KEY CHECK (id = 1),
-    accent_color TEXT NOT NULL DEFAULT '#378ADD',
-    dark_mode INTEGER NOT NULL DEFAULT 1,
-    notifications_enabled INTEGER NOT NULL DEFAULT 1,
-    launch_on_startup INTEGER NOT NULL DEFAULT 0
-  );
+  id INTEGER PRIMARY KEY CHECK (id = 1),
+  accent_color TEXT NOT NULL DEFAULT '#378ADD',
+  dark_mode INTEGER NOT NULL DEFAULT 1,
+  notifications_enabled INTEGER NOT NULL DEFAULT 1,
+  launch_on_startup INTEGER NOT NULL DEFAULT 0,
+  last_activity_id INTEGER REFERENCES activities(id) ON DELETE SET NULL,
+  last_duration_minutes INTEGER NOT NULL DEFAULT 25
+);
 `);
 
 // Seed defaults on first run only

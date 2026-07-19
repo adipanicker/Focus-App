@@ -6,13 +6,19 @@ const DEFAULT_SETTINGS: AppSettings = {
   dark_mode: 1,
   notifications_enabled: 1,
   launch_on_startup: 0,
+  last_activity_id: null,
+  last_duration_minutes: 25,
 };
 
 export function useSettings() {
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    window.electronAPI.getSettings().then(setSettings);
+    window.electronAPI.getSettings().then((s) => {
+      setSettings(s);
+      setLoaded(true);
+    });
   }, []);
 
   async function updateSettings(patch: Partial<AppSettings>) {
@@ -20,5 +26,5 @@ export function useSettings() {
     setSettings(updated);
   }
 
-  return { settings, updateSettings };
+  return { settings, loaded, updateSettings };
 }

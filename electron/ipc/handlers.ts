@@ -1,4 +1,4 @@
-import { ipcMain, IpcMain } from "electron";
+import { ipcMain, app } from "electron";
 import { IPC } from "../../shared/types";
 import { getMainWindow } from "../windows/mainWindow";
 import { getPipWindow } from "../windows/pipWindow";
@@ -132,6 +132,13 @@ export function registerIpcHandlers() {
       db.prepare(`UPDATE settings SET ${setClause} WHERE id = 1`).run(
         ...values,
       );
+
+      if ("launch_on_startup" in payload) {
+        app.setLoginItemSettings({
+          openAtLogin: !!payload.launch_on_startup,
+        });
+      }
+
       return db.prepare("SELECT * FROM settings WHERE id = 1").get();
     },
   );

@@ -10,10 +10,11 @@ export function createPipWindow() {
   pipWindow = new BrowserWindow({
     width: 220,
     height: 120,
-    minWidth: 160,
+    minWidth: 120,
     minHeight: 90,
     maxWidth: 360,
     maxHeight: 200,
+    transparent: true,
     frame: false,
     alwaysOnTop: true,
     resizable: true,

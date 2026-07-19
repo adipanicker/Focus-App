@@ -58,6 +58,8 @@ export interface AppSettings {
   dark_mode: number;
   notifications_enabled: number;
   launch_on_startup: number;
+  last_activity_id: number | null;
+  last_duration_minutes: number;
 }
 
 export interface DayTotal {

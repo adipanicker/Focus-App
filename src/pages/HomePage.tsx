@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTimerState } from "@shared/hooks/useTimerState";
 import { useSettings } from "@shared/hooks/useSettings";
 import TimerCircle from "@/components/timer/TimerCircle";
@@ -7,14 +7,37 @@ import DurationDropdown from "@/components/timer/DurationDropdown";
 import SessionControls from "@/components/timer/SessionControls";
 
 type SessionType = "focus" | "break";
+
 const BREAK_COLOR = "#2FB380";
 
 export default function HomePage() {
   const { status, remainingSeconds, durationSeconds } = useTimerState();
-  const { settings } = useSettings();
+  const { settings, updateSettings, loaded } = useSettings();
   const [activityId, setActivityId] = useState<number | null>(null);
   const [durationMinutes, setDurationMinutes] = useState(25);
   const [sessionType, setSessionType] = useState<SessionType>("focus");
+  const [hasHydrated, setHasHydrated] = useState(false);
+
+  // Pull last-used selections in once settings load, but only once —
+  // otherwise every updateSettings() call below would re-trigger this
+  // and stomp on whatever the user just picked.
+  useEffect(() => {
+    if (loaded && !hasHydrated) {
+      setActivityId(settings.last_activity_id);
+      setDurationMinutes(settings.last_duration_minutes);
+      setHasHydrated(true);
+    }
+  }, [loaded, settings, hasHydrated]);
+
+  function handleActivityChange(id: number) {
+    setActivityId(id);
+    updateSettings({ last_activity_id: id });
+  }
+
+  function handleDurationChange(minutes: number) {
+    setDurationMinutes(minutes);
+    updateSettings({ last_duration_minutes: minutes });
+  }
 
   const isIdle = status === "idle" || status === "completed";
   const ringColor =
@@ -22,7 +45,7 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <div className="flex bg-neutral-800 rounded-2xl p-1 text-sm">
+      <div className="flex bg-neutral-800 rounded-lg p-1 text-sm">
         <button
           onClick={() => setSessionType("focus")}
           className={`px-4 py-1.5 rounded-md transition-colors ${
@@ -53,11 +76,14 @@ export default function HomePage() {
 
       <div className="flex gap-2.5 justify-center">
         {sessionType === "focus" && (
-          <ActivityDropdown value={activityId} onChange={setActivityId} />
+          <ActivityDropdown
+            value={activityId}
+            onChange={handleActivityChange}
+          />
         )}
         <DurationDropdown
           valueMinutes={durationMinutes}
-          onChange={setDurationMinutes}
+          onChange={handleDurationChange}
         />
       </div>
 

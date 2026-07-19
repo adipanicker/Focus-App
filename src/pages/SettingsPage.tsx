@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useSettings } from "@shared/hooks/useSettings";
+import Card from "@/components/shared/Card";
 import type { Activity, TimerPreset } from "@shared/types";
 
-const ACCENT_PRESETS = ["#378ADD", "#7C5CFC", "#2FB380", "#EF9F27", "#E15A5A"];
+//Color presets
+const ACCENT_PRESETS = ["#378ADD", "#7C5CFC", "#EF9F27", "#E15A5A", "#EC4899"];
 
 export default function SettingsPage() {
   const { settings, updateSettings } = useSettings();
@@ -13,6 +15,10 @@ export default function SettingsPage() {
     null,
   );
   const [editingPresetId, setEditingPresetId] = useState<number | null>(null);
+
+  const [notificationsOn, setNotificationsOn] = useState(true);
+  const [startOnBootOn, setStartOnBootOn] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
 
   function loadActivities() {
     window.electronAPI.getActivities().then(setActivities);
@@ -26,13 +32,18 @@ export default function SettingsPage() {
     loadPresets();
   }, []);
 
+  useEffect(() => {
+    setNotificationsOn(!!settings.notifications_enabled);
+    setStartOnBootOn(!!settings.launch_on_startup);
+  }, [settings]);
+
   return (
-    <div className="flex flex-col gap-6 max-w-md">
-      <div>
+    <div className="flex flex-col gap-6 max-w-2xl mx-auto w-full">
+      <Card className="p-4">
         <p className="text-xs text-neutral-400 uppercase tracking-wide mb-2.5">
           Accent color
         </p>
-        <div className="flex gap-2.5">
+        <div className="flex gap-2.5 items-center">
           {ACCENT_PRESETS.map((color) => (
             <button
               key={color}
@@ -45,93 +56,169 @@ export default function SettingsPage() {
               }`}
             />
           ))}
-        </div>
-      </div>
 
-      <div>
-        <div className="flex justify-between items-center mb-2.5">
-          <p className="text-xs text-neutral-400 uppercase tracking-wide">
-            Timer presets
-          </p>
-          <button
-            onClick={async () => {
-              await window.electronAPI.addPreset(15);
-              loadPresets();
-            }}
-            className="text-xs flex items-center gap-1 px-2.5 py-1 bg-neutral-800 rounded-md text-white hover:bg-neutral-700"
+          <div
+            className={`w-7 h-7 rounded-full p-px ${
+              !ACCENT_PRESETS.includes(settings.accent_color)
+                ? "ring-2 ring-white ring-offset-2 ring-offset-neutral-900"
+                : "border border-dashed border-neutral-500"
+            }`}
           >
-            <Plus size={13} /> Add
-          </button>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          {presets.map((p) => (
-            <PresetRow
-              key={p.id}
-              preset={p}
-              isEditing={editingPresetId === p.id}
-              onEdit={() => setEditingPresetId(p.id)}
-              onCancel={() => setEditingPresetId(null)}
-              onSave={async (minutes) => {
-                await window.electronAPI.updatePreset({ id: p.id, minutes });
-                setEditingPresetId(null);
-                loadPresets();
-              }}
-              onDelete={async () => {
-                await window.electronAPI.deletePreset(p.id);
-                loadPresets();
-              }}
+            <input
+              type="color"
+              value={settings.accent_color}
+              onChange={(e) => updateSettings({ accent_color: e.target.value })}
+              className="circle-swatch w-full h-full"
+              title="Custom color"
             />
-          ))}
+          </div>
         </div>
-      </div>
+      </Card>
 
-      <div>
-        <div className="flex justify-between items-center mb-2.5">
-          <p className="text-xs text-neutral-400 uppercase tracking-wide">
-            Session presets
-          </p>
-          <button
-            onClick={async () => {
-              await window.electronAPI.addActivity({
-                name: "New activity",
-                color: ACCENT_PRESETS[0],
-              });
-              loadActivities();
-            }}
-            className="text-xs flex items-center gap-1 px-2.5 py-1 bg-neutral-800 rounded-md text-white hover:bg-neutral-700"
-          >
-            <Plus size={13} /> Add
-          </button>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          {activities.map((a) => (
-            <ActivityRow
-              key={a.id}
-              activity={a}
-              isEditing={editingActivityId === a.id}
-              onEdit={() => setEditingActivityId(a.id)}
-              onCancel={() => setEditingActivityId(null)}
-              onSave={async (name, color) => {
-                await window.electronAPI.updateActivity({
-                  id: a.id,
-                  name,
-                  color,
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="p-4">
+          <div className="flex justify-between items-center mb-2.5">
+            <p className="text-xs text-neutral-400 uppercase tracking-wide">
+              Timer presets
+            </p>
+            <button
+              onClick={async () => {
+                await window.electronAPI.addPreset(15);
+                loadPresets();
+              }}
+              className="text-xs flex items-center gap-1 px-2.5 py-1 bg-neutral-700/60 rounded-md text-white hover:bg-neutral-700"
+            >
+              <Plus size={13} /> Add
+            </button>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            {presets.map((p) => (
+              <PresetRow
+                key={p.id}
+                preset={p}
+                isEditing={editingPresetId === p.id}
+                onEdit={() => setEditingPresetId(p.id)}
+                onCancel={() => setEditingPresetId(null)}
+                onSave={async (minutes) => {
+                  await window.electronAPI.updatePreset({ id: p.id, minutes });
+                  setEditingPresetId(null);
+                  loadPresets();
+                }}
+                onDelete={async () => {
+                  await window.electronAPI.deletePreset(p.id);
+                  loadPresets();
+                }}
+              />
+            ))}
+          </div>
+        </Card>
+
+        <Card className="p-4">
+          <div className="flex justify-between items-center mb-2.5">
+            <p className="text-xs text-neutral-400 uppercase tracking-wide">
+              Session presets
+            </p>
+            <button
+              onClick={async () => {
+                await window.electronAPI.addActivity({
+                  name: "New activity",
+                  color: ACCENT_PRESETS[0],
                 });
-                setEditingActivityId(null);
                 loadActivities();
               }}
-              onDelete={async () => {
-                await window.electronAPI.deleteActivity(a.id);
-                loadActivities();
-              }}
-            />
-          ))}
-        </div>
+              className="text-xs flex items-center gap-1 px-2.5 py-1 bg-neutral-700/60 rounded-md text-white hover:bg-neutral-700"
+            >
+              <Plus size={13} /> Add
+            </button>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            {activities.map((a) => (
+              <ActivityRow
+                key={a.id}
+                activity={a}
+                isEditing={editingActivityId === a.id}
+                onEdit={() => setEditingActivityId(a.id)}
+                onCancel={() => setEditingActivityId(null)}
+                onSave={async (name, color) => {
+                  await window.electronAPI.updateActivity({
+                    id: a.id,
+                    name,
+                    color,
+                  });
+                  setEditingActivityId(null);
+                  loadActivities();
+                }}
+                onDelete={async () => {
+                  await window.electronAPI.deleteActivity(a.id);
+                  loadActivities();
+                }}
+              />
+            ))}
+          </div>
+        </Card>
       </div>
+
+      <Card className="p-4 max-w-sm">
+        <p className="text-xs text-neutral-400 uppercase tracking-wide mb-3">
+          Preferences
+        </p>
+        <div className="flex flex-col gap-3">
+          <Toggle
+            label="Notifications"
+            isOn={notificationsOn}
+            onToggle={async () => {
+              const next = !notificationsOn;
+              setNotificationsOn(next);
+              await updateSettings({ notifications_enabled: next ? 1 : 0 });
+            }}
+          />
+          <Toggle
+            label="Start on boot"
+            isOn={startOnBootOn}
+            onToggle={async () => {
+              const next = !startOnBootOn;
+              setStartOnBootOn(next);
+              await updateSettings({ launch_on_startup: next ? 1 : 0 });
+            }}
+          />
+          <Toggle
+            label="Dark Mode"
+            isOn={darkMode}
+            onToggle={() => setDarkMode((v) => !v)}
+          />
+        </div>
+      </Card>
     </div>
   );
 }
 
+function Toggle({
+  label,
+  isOn,
+  onToggle,
+}: {
+  label: string;
+  isOn: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div className="flex justify-between items-center">
+      <span className="text-sm text-neutral-200">{label}</span>
+      <button
+        onClick={onToggle}
+        className={`w-11 h-6 rounded-full relative transition-colors ${isOn ? "bg-blue-600" : "bg-neutral-700"}`}
+      >
+        <span
+          className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform ${
+            isOn ? "translate-x-5" : "translate-x-0"
+          }`}
+        />
+      </button>
+    </div>
+  );
+}
+
+// PresetRow and ActivityRow — unchanged, keep exactly as they were
 function PresetRow({
   preset,
   isEditing,
