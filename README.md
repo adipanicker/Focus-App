@@ -211,7 +211,7 @@ Some features that may be explored in future versions:
 - Focus streaks
 - More advanced productivity statistics
 - Improved activity heatmap
-- Auto updates
+- Auto update
 - macOS support
 
 ---
